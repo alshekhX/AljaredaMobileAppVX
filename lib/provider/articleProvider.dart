@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:calendar_time/calendar_time.dart';
@@ -8,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../models/Article.dart';
 import '../models/CrossGame.dart';
+import '../utils/const.dart';
 
 class ArticlePrvider with ChangeNotifier {
   List? articles;
@@ -22,16 +21,16 @@ class ArticlePrvider with ChangeNotifier {
   String? articleType;
   String? category;
 
-  // ignore: unnecessary_new
-  BaseOptions options = new BaseOptions(
-    baseUrl: "http://192.168.43.250:8000",
-    connectTimeout: 150000,
-    receiveTimeout: 150000,
-    contentType: 'application/json',
-    validateStatus: (status) {
-      return status! < 600;
-    },
-  );
+  // // ignore: unnecessary_new
+  // BaseOptions options = new BaseOptions(
+  //   baseUrl: "http://192.168.43.250:8000",
+  //   connectTimeout: 150000,
+  //   receiveTimeout: 150000,
+  //   contentType: 'application/json',
+  //   validateStatus: (status) {
+  //     return status! < 600;
+  //   },
+  // );
 
   getArticles() async {
     try {
@@ -47,7 +46,7 @@ class ArticlePrvider with ChangeNotifier {
 
       print(calendarTime.startOfToday);
 
-      Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
 
       // Response response = await dio.get("/api/v1/articles", queryParameters: {
       //   'createdAt': {"$gte": "$dayBefore", "\$$lte": "$dayEnd"}
@@ -79,7 +78,7 @@ class ArticlePrvider with ChangeNotifier {
     // var dayBefore = calendarTime.startOfToday.subtract(Duration(days: 1));
     // var dayEnd = calendarTime.endOfToday;
 
-    Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
     dio.options.headers["authorization"] = 'Bearer $token';
     Response response = await dio.get("/api/v1/articles/journlistarticles",
         queryParameters: {'user': id});
@@ -100,7 +99,7 @@ class ArticlePrvider with ChangeNotifier {
     try {
       //Dio option config
 
-      Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
       dio.options.headers["authorization"] = 'Bearer $token';
       Response response = await dio.get("/api/v1/articles", queryParameters: {
         'category': [category]
@@ -123,7 +122,7 @@ class ArticlePrvider with ChangeNotifier {
     try {
       //Dio option config
 
-      Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
       dio.options.headers["authorization"] = 'Bearer $token';
       var regex = "regex";
       var optionss = "options";
@@ -145,7 +144,7 @@ class ArticlePrvider with ChangeNotifier {
   }
 
   Future<String> getHtml(ArticleModel articleModel) async {
-    Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
 
     Response htmlPage =
         await dio.get('/uploads/htmlarticles/' + articleModel.description!);
@@ -157,7 +156,7 @@ class ArticlePrvider with ChangeNotifier {
     try {
       //Dio option config
 
-      Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
       dio.options.headers["authorization"] = 'Bearer $token';
 
       Response response = await dio
@@ -179,7 +178,7 @@ class ArticlePrvider with ChangeNotifier {
   savedArticleToUser(String id, String token) async {
     try {
       //Dio option config
-      Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
       dio.options.headers["authorization"] = 'Bearer $token';
       Response response = await dio.put("/api/v1/users/savedArt/$id");
       print(response);
@@ -196,7 +195,7 @@ class ArticlePrvider with ChangeNotifier {
   getAllGames(String token) async {
     //Dio option config
 
-    Dio dio = Dio(options);
+      var dio = AljaredaConst().GetdioX();
     dio.options.headers["authorization"] = 'Bearer $token';
 
     Response response = await dio.get("/api/v1/games/crossword");

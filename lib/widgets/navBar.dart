@@ -1,13 +1,15 @@
 
-import 'package:aljaredanews/pages/search.dart';
+import 'package:aljaredanews/classes/nightmode.dart';
+import 'package:aljaredanews/screens/categorySearch/categorysearch.dart';
+import 'package:aljaredanews/screens/profilePage/profilePage.dart';
+import 'package:aljaredanews/utils/const.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
-import '../pages/personalPage.dart';
-import '../pages/today.dart';
+import '../screens/today/today.dart';
 import '../provider/settingProvider.dart';
 import '../utils/adabtiveText.dart';
 
@@ -74,8 +76,8 @@ void dispose() {
           screens: _buildScreens(),
           items: _navBarsItems(),
           confineInSafeArea: true,
-          backgroundColor: Provider.of<Setting>(context,listen: false).nightmode!?Colors.blueGrey.shade800:Colors.white , // Default is Colors.white.
-          handleAndroidBackButtonPress: false, // Default is true.
+          backgroundColor: Provider.of<Setting>(context,listen: false).nightmode!?Colors.grey.shade900:Colors.white , // Default is Colors.white.
+          handleAndroidBackButtonPress: true, // Default is true.
           resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
           stateManagement: true, // Default is true.
           hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
@@ -95,7 +97,7 @@ void dispose() {
             curve: Curves.ease,
             duration: Duration(milliseconds: 200),
           ),
-          navBarStyle: NavBarStyle.style8, // Choose the nav bar style with this property.
+          navBarStyle: NavBarStyle.style12, // Choose the nav bar style with this property.
       ),
     );
   }
@@ -114,24 +116,24 @@ void dispose() {
             PersistentBottomNavBarItem(
                 icon: Icon(CupertinoIcons.news_solid),
                 title: ("اليوم"),
-                activeColorPrimary: Provider.of<Setting>(context,listen: false).nightmode!?Color(0xff93b2ff): Colors.indigo.shade700,
-                 textStyle: TextStyle(  fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 18, Provider.of<Setting>(context).fontSize),
+                activeColorPrimary: Provider.of<Setting>(context,listen: false).nightmode!?Stylesss().nightElement: Colors.indigo.shade700,
+                 textStyle: TextStyle(  fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, AljaredaConst().bottomNavText, Provider.of<Setting>(context).fontSize),
 ),
                 inactiveColorPrimary:  Provider.of<Setting>(context,listen: false).nightmode!? Colors.grey.shade400: Colors.black,
             ),
             PersistentBottomNavBarItem(
                 icon: Icon(CupertinoIcons.search),
                 title: ("البحث"),
-                activeColorPrimary: Provider.of<Setting>(context,listen: false).nightmode!? Color(0xff93b2ff): Colors.indigo.shade700,
-                 textStyle: TextStyle(  fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 18, Provider.of<Setting>(context).fontSize),
+                activeColorPrimary: Provider.of<Setting>(context,listen: false).nightmode!?Stylesss().nightElement: Colors.indigo.shade700,
+                 textStyle: TextStyle(  fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, AljaredaConst().bottomNavText, Provider.of<Setting>(context).fontSize),
 ),
                 inactiveColorPrimary:  Provider.of<Setting>(context,listen: false).nightmode!? Colors.grey.shade400: Colors.black,
             ),
               PersistentBottomNavBarItem(
                 icon: Icon(CupertinoIcons.profile_circled),
                 title: ("الشخصية"),
-                activeColorPrimary: Provider.of<Setting>(context,listen: false).nightmode!? Color(0xff93b2ff): Colors.indigo.shade700,
-                 textStyle: TextStyle(  fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 18, Provider.of<Setting>(context).fontSize),
+                activeColorPrimary: Provider.of<Setting>(context,listen: false).nightmode!? Stylesss().nightElement: Colors.indigo.shade700,
+                 textStyle: TextStyle(  fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, AljaredaConst().bottomNavText, Provider.of<Setting>(context).fontSize),
 ),
                 inactiveColorPrimary:  Provider.of<Setting>(context,listen: false).nightmode!? Colors.grey.shade400: Colors.black,
             )

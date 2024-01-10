@@ -1,11 +1,15 @@
 import 'dart:io';
 
+import 'package:aljaredanews/utils/const.dart';
+import 'package:aljaredanews/utils/utilMethod.dart';
+import 'package:aljaredanews/widgets/CustomShimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sizer/sizer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -62,7 +66,7 @@ class _RawNewsState extends State<RawNews> {
           Row(
             children: [
               Padding(
-                padding: EdgeInsets.only(left: widget.size!.width * .03),
+                padding: EdgeInsets.only(left: AljaredaConst().pagePadding),
                 child: Container(
                   alignment: Alignment.topLeft,
                   child: PopupMenuButton<String>(
@@ -76,7 +80,7 @@ class _RawNewsState extends State<RawNews> {
                       switch (value) {
                         case 'حفظ في الصفحة الشخصية':
                           String internetConn =
-                              await _checkInternetConnection();
+                              await UtilMethod().checkInternetConnection();
 
                           if (internetConn == 'false') {
                             showTopSnackBar(
@@ -143,15 +147,18 @@ class _RawNewsState extends State<RawNews> {
                 width: widget.size!.width * .8,
                 alignment: Alignment.bottomRight,
                 child: Padding(
-                  padding: EdgeInsets.only(right: widget.size!.width * .01),
+                  padding: EdgeInsets.only(right: AljaredaConst().pagePadding),
                   child: Text(
                     widget.text!,
                     overflow: TextOverflow.ellipsis,
+                    
                     maxLines: 5,
                     textDirection: TextDirection.rtl,
                     style: TextStyle(
+                      wordSpacing: 1,
+                      height: 1.5,
                       fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(
-                          context, 24, Provider.of<Setting>(context).fontSize),
+                          context, 26, Provider.of<Setting>(context).fontSize),
                     ),
                   ),
                 ),
@@ -159,52 +166,64 @@ class _RawNewsState extends State<RawNews> {
             ],
           ),
           SizedBox(
-            height: widget.size!.height * .005,
+            height: widget.size!.height * .008,
           ),
           Row(
             children: [
               Spacer(),
               Container(
                 child: Text(
-                  ': ${widget.place}',
+                   '${widget.place}',
                   textDirection: TextDirection.rtl,
                   style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          color: Provider.of<Setting>(context,
+                                                        listen: false)
+                                                    .nightmode!
+                                                ? Colors.white.withOpacity(.70)
+                                                :  Color(0xff212427).withOpacity(.8),
+
                     fontSize: const AdaptiveTextSize()
-                        .getadaptiveTextSizeSetting(context, 16,
+                        .getadaptiveTextSizeSetting(context, 24,
                             Provider.of<Setting>(context).fontSize),
                   ),
                 ),
               ),
+              // Container(
+              //   alignment: Alignment.bottomRight,
+              //   child: Text(
+              //     widget.arthur!,
+              //     textDirection: TextDirection.rtl,
+              //     style: TextStyle(
+              //       fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(
+              //           context, 16, Provider.of<Setting>(context).fontSize),
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(
+              //   width: widget.size!.width * .005,
+              // ),
               Container(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  widget.arthur!,
-                  textDirection: TextDirection.rtl,
-                  style: TextStyle(
-                    fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(
-                        context, 16, Provider.of<Setting>(context).fontSize),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: widget.size!.width * .005,
-              ),
-              Container(
-                alignment: Alignment.topCenter,
                 margin: EdgeInsets.only(
                     right: widget.size!.width * .03,
-                    left: widget.size!.width * .001),
+                    left: widget.size!.width * .005),
                 child: Icon(
-                  Ionicons.glasses_outline,
+                  Ionicons.location_outline,
+                                          color: Provider.of<Setting>(context,
+                                                        listen: false)
+                                                    .nightmode!
+                                                ? Colors.white.withOpacity(.70)
+                                                :  Color(0xff212427).withOpacity(.8),
+
                   size: widget.size!.width *
-                      .08 *
+                      .1 *
                       Provider.of<Setting>(context).fontSize,
                 ),
               ),
             ],
           ),
           SizedBox(
-            height: widget.size!.height * .005,
+            height: widget.size!.height * .01,
           ),
           widget.assets!.isNotEmpty
               ? widget.assets!.length > 1
@@ -215,19 +234,11 @@ class _RawNewsState extends State<RawNews> {
                               width: widget.size!.width * .85,
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    'http://192.168.43.250:8000/uploads/photos/$e',
+                                    AljaredaConst.BasePicUrl+e,
                                 placeholder: (context, url) =>
-                                    Shimmer.fromColors(
-                                  baseColor: Colors.grey[300]!,
-                                  highlightColor: Colors.grey[100]!,
-                                  enabled: true,
-                                  child: Container(
-                                    height: widget.size!.height * .34,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                   CustomShimmer(height: 34.h,padding: 1.sp,),
                                 errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                                  CustomShimmer(height: 34.h,padding: 1.sp,),
                               ),
                             ),
                           )
@@ -244,20 +255,16 @@ class _RawNewsState extends State<RawNews> {
                         autoPlayCurve: Curves.fastOutSlowIn,
                         enlargeCenterPage: true,
                       ))
-                  : CachedNetworkImage(
-                      imageUrl:
-                          'http://192.168.43.250:8000/uploads/photos/${widget.assets![0]}',
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        enabled: true,
-                        child: Container(
-                          height: widget.size!.height * .34,
-                          color: Colors.white,
-                        ),
+                  : Container(
+                                                  width: widget.size!.width * .88,
+
+                    child: CachedNetworkImage(
+                        imageUrl:
+                              AljaredaConst.BasePicUrl+widget.assets![0],
+                        placeholder: (context, url) => CustomShimmer(height: 34.h,padding: 1.sp,),
+                        errorWidget: (context, url, error) => CustomShimmer(height: 34.h,padding: 1.sp,),
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    )
+                  )
               : Container(),
           SizedBox(
             height: widget.size!.height * .005,
@@ -267,18 +274,5 @@ class _RawNewsState extends State<RawNews> {
     );
   }
 
-  Future<String> _checkInternetConnection() async {
-    try {
-      final response = await InternetAddress.lookup('www.google.com');
-      if (response.isNotEmpty) {
-        setState(() {
-          _isConnected = true;
-        });
-        return 'success';
-      }
-      return 'success';
-    } on SocketException catch (err) {
-      return 'false';
-    }
-  }
 }
+

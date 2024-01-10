@@ -27,7 +27,7 @@ class RawNewsHLine extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(left: 5, right: 5),
           decoration: BoxDecoration(
-              color: Provider.of<Setting>(context,listen: false).nightmode!?Colors.blueGrey.shade800:Colors.white, border: Border.all(color:  Provider.of<Setting>(context,
+              color: Provider.of<Setting>(context,listen: false).nightmode!?Colors.blueGrey.shade900:Colors.white, border: Border.all(color:  Provider.of<Setting>(context,
                                                                           listen:
                                                                               false)
                                                                       .nightmode!

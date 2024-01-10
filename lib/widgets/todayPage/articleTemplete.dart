@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:aljaredanews/classes/nightmode.dart';
+import 'package:aljaredanews/utils/const.dart';
+import 'package:aljaredanews/widgets/CustomShimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sizer/sizer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -27,29 +32,26 @@ class ArticleWidget extends StatefulWidget {
     @required this.size,
     @required this.category,
     @required this.id,
-        @required this.userPhoto,
-
+    @required this.userPhoto,
   }) : super(key: key);
 
   final BuildContext? context;
-  final String ?imageUrl;
-  final String ?title;
-  final String ?headline;
-  final String ?arthur;
-  final String ?description;
-  final Size ?size;
+  final String? imageUrl;
+  final String? title;
+  final String? headline;
+  final String? arthur;
+  final String? description;
+  final Size? size;
   final String? category;
   final String? id;
-    final String? userPhoto;
-
-
+  final String? userPhoto;
 
   @override
   _ArticleWidgetState createState() => _ArticleWidgetState();
 }
 
 class _ArticleWidgetState extends State<ArticleWidget> {
-       bool? _isConnected ;
+  bool? _isConnected;
 
   bool bookMarked = false;
   @override
@@ -70,14 +72,16 @@ class _ArticleWidgetState extends State<ArticleWidget> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: widget.size!.height * .02,bottom:  widget.size!.height * .01),
+      padding: EdgeInsets.only(
+          top: widget.size!.height * .02, bottom: widget.size!.height * .01),
       child: Container(
-        width: widget.size!.width*.98,
+        width: widget.size!.width * .98,
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-          color: Provider.of<Setting>(context,listen: false).nightmode!?Colors.grey.shade500  :
-Colors.black,
+          color: Provider.of<Setting>(context, listen: false).nightmode!
+              ? Colors.grey.shade500
+              : Colors.black,
           width: 2,
         ))),
         child: Column(
@@ -87,108 +91,107 @@ Colors.black,
               child: Row(
                 children: [
                   SizedBox(
-                    width: widget.size!.width * .02,
+                    width: AljaredaConst().pagePadding,
                   ),
                   Container(
-                    width: widget.size!.width * .83,
+                    width: widget.size!.width * .80,
                     margin: EdgeInsets.only(bottom: 5),
                     alignment: Alignment.bottomRight,
-                    child: Text(
-                      widget.headline!,
-                      textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                                  fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 26, Provider.of<Setting>(context).fontSize),
+                    child: Text(widget.headline!,
+                        textDirection: TextDirection.rtl,
+                        style: GoogleFonts.tajawal(
+                          fontWeight: FontWeight.w500,
+                          fontSize: AdaptiveTextSize()
+                              .getadaptiveTextSizeSetting(context, 26,
+                                  Provider.of<Setting>(context).fontSize),
+                        )
 
-                      ),
-                    ),
+                        // TextStyle(
+                        //   fontWeight: FontWeight.w500,
+                        //             fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 26, Provider.of<Setting>(context).fontSize),
+
+                        // ),
+                        ),
                   ),
                   Spacer(),
-                  Padding(
-                    padding:  EdgeInsets.only(left:        widget.size!.height * .0032,
-),
-                    child: Container(
-                      alignment: Alignment.topLeft,
-                      child: PopupMenuButton<String>(
-                        child: bookMarked == true
-                            ? Icon(
-                                Icons.bookmark_added_outlined,
-                                color: Colors.lightBlue,
-                              )
-                            : Icon(Icons.bookmark_add_outlined),
-                        onSelected: (value) async {
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: PopupMenuButton<String>(
+                      child: bookMarked == true
+                          ? Icon(
+                              Icons.bookmark_added_outlined,
+                              color: Provider.of<Setting>(context,listen: false).nightmode!? Stylesss().nightElement: Colors.indigo.shade700,
+                            )
+                          : Icon(Icons.bookmark_add_outlined),
+                      onSelected: (value) async {
+                        switch (value) {
+                          case 'حفظ في الصفحة الشخصية':
+                            String internetConn =
+                                await _checkInternetConnection();
 
+                            if (internetConn == 'false') {
+                              showTopSnackBar(
+                                context,
+                                CustomSnackBar.error(
+                                  message:
+                                      "تاكد من تشغيل بيانات الهاتف وحاول مجددا",
+                                ),
+                              );
+                              break;
+                            }
+                            String token = Provider.of<AuthProvider>(context,
+                                    listen: false)
+                                .token!;
+                            String res = await Provider.of<ArticlePrvider>(
+                                    widget.context!,
+                                    listen: false)
+                                .savedArticleToUser(widget.id!, token);
+                            print(res);
 
+                            if (res == 'success') {
+                              print('yes mother fucker');
 
-                          switch (value) {
-                            case 'حفظ في الصفحة الشخصية':
-
-
-                              String internetConn =
-                                  await _checkInternetConnection();
-
-                              if (internetConn == 'false') {
-                                showTopSnackBar(
-                                  context,
-                                  CustomSnackBar.error(
-                                    message:
-                                        "تاكد من تشغيل بيانات الهاتف وحاول مجددا",
-                                  ),
-                                );
-                                break;
-                              }
-                               String token =
-         Provider.of<AuthProvider>(context, listen: false).token!;
-                              String res = await Provider.of<ArticlePrvider>(
-                                      widget.context!,
-                                      listen: false)
-                                  .savedArticleToUser(widget.id!,token);
-                              print(res);
-                            
-                              if (res == 'success') {
-                               
-                                print('yes mother fucker');
-                              
-                                   setState(() {
+                              setState(() {
                                 bookMarked = true;
                               });
 
-                                 ScaffoldMessenger.of(widget.context!)
-                                    // ignore: prefer_const_constructors
-                                    .showSnackBar(SnackBar(
-                                  content: const Text("تم حفظ المقال في الصفحة الشخصية"),
-                                ));
-                              } else {
-                                ScaffoldMessenger.of(widget.context!)
-                                    // ignore: prefer_const_constructors
-                                    .showSnackBar(SnackBar(
-                                  content: const Text("خطأ ولم يتم حفظ المقال"),
-                                ));
-                                 ScaffoldMessenger.of(widget.context!)
-                                    // ignore: prefer_const_constructors
-                                    .showSnackBar(SnackBar(
-                                  content:
-                                      const Text("تم حفظ المقال في الصفحة الشخصية"),
-                                ));
-                              }
-                              break;
-                            case 'الغاء':
-                              break;
-                          }
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return {'حفظ في الصفحة الشخصية', 'الغاء'}
-                              .map((String choice) {
-                            return PopupMenuItem<String>(
-                              value: choice,
-                              child: Text(choice),
-                            );
-                          }).toList();
-                        },
-                      ),
+                              ScaffoldMessenger.of(widget.context!)
+                                  // ignore: prefer_const_constructors
+                                  .showSnackBar(SnackBar(
+                                content: const Text(
+                                    "تم حفظ المقال في الصفحة الشخصية"),
+                              ));
+                            } else {
+                              ScaffoldMessenger.of(widget.context!)
+                                  // ignore: prefer_const_constructors
+                                  .showSnackBar(SnackBar(
+                                content: const Text("خطأ ولم يتم حفظ المقال"),
+                              ));
+                              ScaffoldMessenger.of(widget.context!)
+                                  // ignore: prefer_const_constructors
+                                  .showSnackBar(SnackBar(
+                                content: const Text(
+                                    "تم حفظ المقال في الصفحة الشخصية"),
+                              ));
+                            }
+                            break;
+                          case 'الغاء':
+                            break;
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return {'حفظ في الصفحة الشخصية', 'الغاء'}
+                            .map((String choice) {
+                          return PopupMenuItem<String>(
+                            value: choice,
+                            child: Text(choice),
+                          );
+                        }).toList();
+                      },
                     ),
                   ),
-                  SizedBox(
-                    width: widget.size!.width * .01,
+                   SizedBox(
+                    width: AljaredaConst().pagePadding-3.w,
                   ),
                 ],
               ),
@@ -196,61 +199,119 @@ Colors.black,
 //headline
 
             Padding(
-              padding:  EdgeInsets.only(right: widget.size!.width*.02,top:widget.size!.height*.01 ),
+              padding: EdgeInsets.only(
+                  right: widget.size!.width * .02,
+                  top: widget.size!.height * .01,
+                  bottom: widget.size!.height * .01),
               child: Row(
                 children: [
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: EdgeInsets.only(left: widget.size!.width * .027,                   bottom: widget.size!.height*.015,
-),
-                      child: Text(
-                        widget.category!,
-                        
-                        style: TextStyle(color :
-                   Provider.of<Setting>(context,listen: false).nightmode!?Colors.grey.shade300.withOpacity(.6)  :
-                  Colors.black.withOpacity(.4),
-                                    fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 16, Provider.of<Setting>(context).fontSize),
-                  ),
+                      padding: EdgeInsets.only(
+                        left:    
+                     AljaredaConst().pagePadding-3.w,
+                        bottom: widget.size!.height * .015,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          color: Provider.of<Setting>(context, listen: false)
+                                  .nightmode!
+                              ? Colors.white.withOpacity(.70)
+                              : Color(0xff212427).withOpacity(.8),
+
+                          width: 0.3, // Underline thickness
+                        ))),
+                        child: Text(
+                          widget.category!,
+                          style: GoogleFonts.tajawal(
+                            color: Provider.of<Setting>(context, listen: false)
+                                    .nightmode!
+                                ? Colors.white.withOpacity(.70)
+                                : Color(0xff212427).withOpacity(.8),
+                            fontWeight: FontWeight.w800,
+                            fontSize: AdaptiveTextSize()
+                                .getadaptiveTextSizeSetting(context, 22,
+                                    Provider.of<Setting>(context).fontSize),
+                          ),
+
+                          //       style: TextStyle(color : Provider.of<Setting>(context,
+                          //                                       listen: false)
+                          //                                   .nightmode!
+                          //                               ? Colors.white.withOpacity(.70)
+                          //                               :  Color(0xff212427).withOpacity(.8),
+                          //                   fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 16, Provider.of<Setting>(context).fontSize),
+                          // ),
+                        ),
                       ),
                     ),
                   ),
                   Spacer(),
                   Container(
-                    margin: EdgeInsets.only(bottom: widget.size!.height*.015),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                      color: Provider.of<Setting>(context, listen: false)
+                              .nightmode!
+                          ? Colors.white.withOpacity(.70)
+                          : Color(0xff212427).withOpacity(.8),
+                          
+
+                      width: 0.8, // Underline thickness
+                    ))),
+                    margin: EdgeInsets.only(bottom: widget.size!.height * .005),
                     alignment: Alignment.bottomRight,
-                    child: Text(
-                      widget.arthur!,
-                      textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                        color :
- Provider.of<Setting>(context,listen: false).nightmode!?Colors.white.withOpacity(.8) :
-Colors.grey,
+                    child: Text(widget.arthur!,
+                        textDirection: TextDirection.rtl,
+                        style: GoogleFonts.tajawal(
+                          color: Provider.of<Setting>(context, listen: false)
+                                  .nightmode!
+                              ? Colors.white.withOpacity(.70)
+                              : Color(0xff212427).withOpacity(.8),
+                          fontWeight: FontWeight.w800,
+                          fontSize: AdaptiveTextSize()
+                              .getadaptiveTextSizeSetting(context, 22,
+                                  Provider.of<Setting>(context).fontSize),
+                        )
 
-                                   fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 18, Provider.of<Setting>(context).fontSize),
+                        //  TextStyle(
+                        //   decorationStyle: TextDecorationStyle.wavy,
+                        //   color : Provider.of<Setting>(context,
+                        //                                   listen: false)
+                        //                               .nightmode!
+                        //                           ? Colors.white.withOpacity(.70)
+                        //                           :  Color(0xff212427).withOpacity(.8),
 
-                      ),
-                    ),
+                        //              fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 22, Provider.of<Setting>(context).fontSize),
+
+                        // ),
+                        ),
                   ),
                   SizedBox(
                     width: widget.size!.width * .01,
                   ),
-                   Container(
-                                       margin: EdgeInsets.only(bottom: widget.size!.height*.015),
-
-                          height:widget.size!.height * .05,
-                          width: widget.size!.height * .05,
-                          child: CircleAvatar(
-                            radius: 18,
-                            backgroundColor:
-                                Provider.of<Setting>(context, listen: false)
-                                        .nightmode!
-                                    ? Colors.white
-                                    : Colors.black,
-                            backgroundImage: widget.userPhoto !='no_image.jpg'?   NetworkImage(
-                                                                    'http://192.168.43.250:8000/uploads/photos/' +
-                                                                        widget.userPhoto! ) as ImageProvider:AssetImage('assets/profilePlace.png') as ImageProvider,
-                          ))
+                  Container(
+                      margin:
+                          EdgeInsets.only(bottom: widget.size!.height * .015),
+                      height: widget.size!.height * .08,
+                      width: widget.size!.height * .08,
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor:
+                            Provider.of<Setting>(context, listen: false)
+                                    .nightmode!
+                                ? Colors.white
+                                : Colors.black,
+                        backgroundImage: widget.userPhoto != 'no_image.jpg'
+                            ? NetworkImage(
+                                AljaredaConst.BasePicUrl +
+                                    widget.userPhoto!) as ImageProvider
+                            : AssetImage('assets/profilePlace.png')
+                                as ImageProvider,
+                      )),
+                      SizedBox(width:  AljaredaConst().pagePadding-3.w,)
                   // Container(
                   //   margin: EdgeInsets.only(
                   //       right: widget.size.width * .03, bottom:widget.size.height * .01),
@@ -262,27 +323,20 @@ Colors.grey,
               ),
             ),
 
-             Padding(
-               padding:  EdgeInsets.only(bottom: widget.size!.height*.01),
-               child: Container(
-                  child: CachedNetworkImage(
-        imageUrl: widget.imageUrl!,
-        placeholder: (context, url) =>Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  enabled: true,
-          child: Container(
-        width: widget.size!.width * .100,
-            height: widget.size!.height*.34,
-            color: Colors.white,
-            
-          ),
-        )
-,
-        errorWidget: (context, url, error) => Icon(Icons.error),
-     ),),
-             ),
-            SizedBox(height: widget.size!.height*.02,)
+            Padding(
+              padding: EdgeInsets.only(bottom: widget.size!.height * .01),
+              child: Container(
+                width: widget.size!.width * .92,
+                child: CachedNetworkImage(
+                  imageUrl: widget.imageUrl!,
+                  placeholder: (context, url) => CustomShimmer(height: 34.h,padding: 1.sp,),
+                  errorWidget: (context, url, error) => CustomShimmer(height: 34.h,padding: 1.sp,),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: widget.size!.height * .02,
+            )
             //description
           ],
         ),
@@ -304,6 +358,7 @@ Colors.grey,
       return 'false';
     }
   }
+
   void handleClick(String value) {
     switch (value) {
       case 'save article':

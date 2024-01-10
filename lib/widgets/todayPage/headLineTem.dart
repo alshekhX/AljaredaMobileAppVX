@@ -1,8 +1,10 @@
 
+import 'package:aljaredanews/widgets/CustomShimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../provider/settingProvider.dart';
 import '../../utils/adabtiveText.dart';
@@ -13,41 +15,29 @@ class HeadLine extends StatelessWidget {
     @required this.context,
     @required this.imageUrl,
     @required this.text,
-    @required this.size,
   }) : super(key: key);
 
   final BuildContext? context;
   final String? imageUrl;
   final String? text;
-  final Size ?size;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      width: size!.width * 0.73,
+      width:73.w,
       child: Card(
         child: Stack(
           children: [
             Container(
                 child: CachedNetworkImage(
         imageUrl: imageUrl!,
-        placeholder: (context, url) =>Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                enabled: true,
-          child: Container(
-      width: size!.width * 0.73,
-            height: size!.height*.26,
-            color: Colors.white,
-            
-          ),
-        )
+        placeholder: (context, url) =>CustomShimmer(height: 25.h,padding: 5.sp,)
 ,
-        errorWidget: (context, url, error) => Icon(Icons.error),
+        errorWidget: (context, url, error) => CustomShimmer(height: 25.h,padding: 5.sp,),
      ),),
             Positioned(
-              width: size!.width * .6,
+              width:60.w,
               bottom: 5,
               right: 3,
               child: Container(
@@ -57,7 +47,7 @@ Colors.grey.shade200.withOpacity(.8),
                     border: Border.all(color: Colors.black, width: .5)),
                 alignment: Alignment.bottomRight,
                 child: Padding(
-                  padding:  EdgeInsets.all(size!.height*.008),
+                  padding:  EdgeInsets.all(.08.h),
                   child:
                   
                   
@@ -70,7 +60,7 @@ Colors.grey.shade200.withOpacity(.8),
                     style: TextStyle(
                                                                                                fontSize: AdaptiveTextSize().getadaptiveTextSizeSetting(context, 18, Provider.of<Setting>(context).fontSize),
 
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

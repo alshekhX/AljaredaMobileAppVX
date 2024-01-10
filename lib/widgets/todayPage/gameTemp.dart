@@ -2,6 +2,7 @@
 import 'package:aljaredanews/utils/adabtiveText.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../provider/settingProvider.dart';
 
@@ -11,20 +12,18 @@ class Game extends StatelessWidget {
     @required this.context,
     @required this.imageUrl,
     @required this.text,
-    @required this.size,
   }) : super(key: key);
 
   final BuildContext ?context;
   final String? imageUrl;
   final String? text;
-  final Size ?size;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin:
-          EdgeInsets.only(top: size!.height * .03, bottom: size!.height * .03),
-      width: size!.width * 0.73,
+          EdgeInsets.only(top: 3.h, bottom: 3.h),
+      width: 73.w,
       child: Column(
         children: [
           Container(
@@ -43,7 +42,7 @@ class Game extends StatelessWidget {
           ),
           Container(
          
-              height: size!.height * 0.25,
+              height: 25.h,
               child: 
               
               

@@ -85,21 +85,20 @@ class UserInfo {
         this.createdAt,
         this.savedArticles,
         this.id,
-        this.firstName,
         this.userName,
-        this.lastName,
+        this.phone,
         this.email,
         this.v,
     });
 
     String ?photo;
+    
     String ?role;
     DateTime? createdAt;
     List<ArticleModel>? savedArticles;
     String? id;
-    String? firstName;
+    String? phone;
     String ?userName;
-    String ?lastName;
     String ?email;
     int ?v;
 
@@ -113,9 +112,8 @@ class UserInfo {
         createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
         savedArticles: json["savedArticles"] == null ? null : List<ArticleModel>.from(json["savedArticles"].map((x) => ArticleModel.fromMap(x))),
         id: json["_id"] == null ? null : json["_id"],
-        firstName: json["firstName"] == null ? null : json["firstName"],
         userName: json["userName"] == null ? null : json["userName"],
-        lastName: json["lastName"] == null ? null : json["lastName"],
+        phone: json["phone"] == null ? null : json["phone"],
         email: json["email"] == null ? null : json["email"],
         v: json["__v"] == null ? null : json["__v"],
     );
@@ -126,9 +124,8 @@ class UserInfo {
         "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
         "savedArticles": savedArticles == null ? null : List<dynamic>.from(savedArticles!.map((x) => x.toMap())),
         "_id": id == null ? null : id,
-        "firstName": firstName == null ? null : firstName,
+        "phone": phone == null ? null : phone,
         "userName": userName == null ? null : userName,
-        "lastName": lastName == null ? null : lastName,
         "email": email == null ? null : email,
         "__v": v == null ? null : v,
     };

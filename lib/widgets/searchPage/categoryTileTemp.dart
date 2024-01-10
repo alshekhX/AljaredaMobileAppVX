@@ -1,7 +1,8 @@
 
+import 'package:aljaredanews/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/articleProvider.dart';
@@ -32,7 +33,7 @@ class CategoryTileTemp extends StatelessWidget {
         Provider.of<ArticlePrvider>(context, listen: false).category = category;
         print(category);
 
-        pushNewScreen(context,
+         PersistentNavBarNavigator.  pushNewScreen(context,
             pageTransitionAnimation: PageTransitionAnimation.scale,
             screen: CategBottomNavBar(),
             withNavBar: false);
@@ -44,10 +45,14 @@ class CategoryTileTemp extends StatelessWidget {
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: ListTile(
+            contentPadding:EdgeInsets.only(right: AljaredaConst().pagePadding),
             leading: FaIcon(
               icon,
-              color:  Provider.of<Setting>(context,listen: false).nightmode!?Colors.white  :
-Colors.black,
+              color: Provider.of<Setting>(context,
+                                                        listen: false)
+                                                    .nightmode!
+                                                ? Colors.white.withOpacity(.87)
+                                                :  Color(0xff212427),
             ),
             title: Text(
               text!,

@@ -1,5 +1,7 @@
 //logic
+import 'package:aljaredanews/provider/settingProvider.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class AdaptiveTextSize {
   const AdaptiveTextSize();
@@ -15,6 +17,6 @@ class AdaptiveTextSize {
       sizeSetting = 1;
     }
     // 720 is medium screen height
-    return (value / 720) * MediaQuery.of(context).size.height * sizeSetting;
+    return value  * sizeSetting * Provider.of<Setting>(context,listen: false).fontSize;
   }
 }
